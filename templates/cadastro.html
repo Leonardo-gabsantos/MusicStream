@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicStream - Criar Conta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-container">  
+        <div class="auth-header">
+            <h1>Music<span class="logo-blue">Stream</span><span class="subtitle"> - Seu streaming de musicas</span></h1>
+        </div>
+        
+        <div class="auth-card">
+            <h2 class="card-title">Cadastre-se</h2>
+            
+           <!-- exibição de mensagem de erro caso a senha e a confirmação de senha não sejam iguais
+ -->             {% if erro %}
+                <p class="error-message">{{ erro }}</p>
+            {% endif %}
+
+            <form action="{{ url_for('cadastro') }}" method="post" class="auth-form">
+                <input type="text" name="nome" placeholder="Digite seu nome" class="input-pill" required>
+                <input type="email" name="email" placeholder="Digite seu email" class="input-pill" required>
+                <input type="password" name="senha" placeholder="Digite sua senha" class="input-pill" required>
+                <input type="password" name="confirmar_senha" placeholder="Confirme sua senha" class="input-pill" required>
+                
+                <button type="submit" class="btn_submit">Concluir cadastro</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Já possui conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

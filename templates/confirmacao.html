@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicStream - Cadastro Concluído</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="auth-container">  
+        <div class="auth-header">
+            <h1>Music<span class="logo-blue">Stream</span><span class="subtitle"> - Seu streaming de musicas</span></h1>
+        </div>
+        
+        <div class="auth-card">
+            <h2 class="card-title">Cadastro efetuado com sucesso!</h2>
+
+            <div class="auth-footer" style="margin-top: 30px;">
+                <a href="{{ url_for('login') }}" class="input-pill btn-pill-link">Ir para o Login</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
