@@ -33,7 +33,7 @@ def login():
 
         # 2. Verifica se existe e se a senha está correta
         if usuario and check_password_hash(usuario.senha_hash, senha):
-            return f"<h1>Bem-vindo, {usuario.nome}! Login realizado com sucesso.</h1>"
+            return redirect(url_for("home"))
         else:
             erro = "E-mail ou senha incorretos."
 
@@ -70,6 +70,10 @@ def cadastro():
 @app.route("/confirmacao")
 def confirmacao():
     return render_template("confirmacao.html")
+
+@app.route("/home")
+def home():
+    return render_template("home.html", usuario="Usuário MusicStream")
 
 if __name__ == "__main__":
     app.run(debug=True)

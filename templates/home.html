@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicStream - Início</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Music<span class="logo-blue">Stream</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="active">🏠 Início</a>
+                <a href="#">🔍 Buscar</a>
+                <a href="#">📚 Sua Biblioteca</a>
+            </nav>
+            <div class="user-info">
+                <p>👤 <strong>{{ usuario }}</strong></p>
+                <a href="{{ url_for('login') }}" class="btn-logout">Sair</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Boas-vindas ao MusicStream!</h1>
+            </header>
+
+            <section class="section">
+                <h2>Álbuns em Destaque</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-img" style="background-color: #3b82f6;">🎵</div>
+                        <h3>Top Brasil</h3>
+                        <p>As músicas mais tocadas do momento.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img" style="background-color: #8b5cf6;">🎸</div>
+                        <h3>Rock Classics</h3>
+                        <p>Os maiores sucessos do rock mundial.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-img" style="background-color: #ec4899;">🎧</div>
+                        <h3>Pop Hits</h3>
+                        <p>Sintonize nos lançamentos pop do ano.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Player Fixo -->
+    <footer class="player">
+        <div class="track-info">
+            <div class="track-thumb">🎶</div>
+            <div>
+                <h4>Nome da Música</h4>
+                <p>Nome do Artista</p>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <button class="btn-control btn-step">⏮</button>
+            <button class="btn-control btn-play">▶</button>
+            <button class="btn-control btn-step">⏭</button>
+        </div>
+
+        <div class="player-actions">
+            <button class="btn-like" title="Curtir">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </button>
+        </div>
+    </footer>
+
+</body>
+</html>
