@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicStream - Buscar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Music<span class="logo-blue">Stream</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="{{ url_for('home') }}" class="nav-item">🏠 Início</a>
+                <a href="{{ url_for('buscar') }}" class="nav-item active">🔍 Buscar</a>
+                <a href="#" class="nav-item">📚 Sua Biblioteca</a>
+            </nav>
+            <div class="user-info">
+                <p>👤 <strong>{{ usuario }}</strong></p>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Sair</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1>Buscar Músicas</h1>
+            </header>
+
+            <!-- Form de Pesquisa -->
+            <section class="section">
+                <form action="{{ url_for('buscar') }}" method="GET" class="search-form">
+                    <input type="text" name="q" value="{{ query }}" placeholder="O que você quer ouvir?" required class="search-input">
+                    <button type="submit" class="btn-search">Pesquisar</button>
+                </form>
+            </section>
+
+            <!-- Lista de Resultados -->
+            <section class="section">
+                {% if resultados %}
+                    <h2>Resultados para "{{ query }}"</h2>
+                    <div class="cards-grid">
+                        {% for musica in resultados %}
+                            <div class="card track-card">
+                                <!-- Capa da Música -->
+                                {% if musica.artwork and musica.artwork['150x150'] %}
+                                    <img src="{{ musica.artwork['150x150'] }}" alt="Capa" class="card-img-cover" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-img-placeholder', textContent: '🎵'}));">
+                                {% else %}
+                                    <div class="card-img-placeholder">🎵</div>
+                                {% endif %}
+                                
+                                <!-- Título e Artista com Reticências -->
+                                <div class="track-info-container">
+                                    <h3 title="{{ musica.title }}">{{ musica.title }}</h3>
+                                    <p title="{{ musica.user.name }}">{{ musica.user.name }}</p>
+                                </div>
+                                
+                                <!-- Botão Fixo -->
+                                <button class="btn-play-stream" 
+                                        data-url="https://discoveryprovider.audius.co/v1/tracks/{{ musica.id }}/stream?app_name=MUSICSTREAM"
+                                        data-title="{{ musica.title }}"
+                                        data-artist="{{ musica.user.name }}">
+                                    ▶ Tocar
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% elif query %}
+                    <p>Nenhuma música encontrada para "{{ query }}".</p>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+
+    <!-- Player Fixo no Rodapé -->
+    <footer class="player">
+        <div class="track-info">
+            <div class="track-thumb" id="player-thumb">🎶</div>
+            <div>
+                <h4 id="player-title">Nome da Música</h4>
+                <p id="player-artist">Nome do Artista</p>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <button class="btn-control btn-step">⏮</button>
+            <button class="btn-control btn-play" id="main-play-btn">▶</button>
+            <button class="btn-control btn-step">⏭</button>
+        </div>
+
+        <div class="player-actions">
+            <button class="btn-like" title="Curtir">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Elemento invisível que toca o áudio real -->
+    <audio id="audio-player"></audio>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

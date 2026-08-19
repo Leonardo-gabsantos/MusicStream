@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -5,12 +6,12 @@ from models import db, Usuario
 
 app = Flask(__name__)
 
-# Configurações do App
-app.config['SECRET_KEY'] = 'chave_secreta_musicstream_123' # Obrigatorio para versoes de sessao
+# --- CONFIGURAÇÕES DO APP ---
+app.config['SECRET_KEY'] = 'chave_secreta_musicstream_123' # Obrigatório para sessões
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///musicstream.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicialização do Banco e LoginManager
+# --- INICIALIZAÇÃO DE EXTENSÕES ---
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -22,11 +23,11 @@ login_manager.login_message = 'Por favor, faça login para acessar esta página.
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
-# Criar a tabela no banco automaticamente
+# Criar a tabela no banco 
 with app.app_context():
     db.create_all()
 
-# --- ROTAS ---
+# --- ROTAS DA APLICAÇÃO ---
 
 @app.route('/')
 def index():
@@ -40,7 +41,6 @@ def login():
         
         usuario = Usuario.query.filter_by(email=email).first()
         
-        # Valida se o usuário existe e se a senha descriptografada bate
         if usuario and check_password_hash(usuario.senha_hash, senha):
             login_user(usuario)
             return redirect(url_for('home'))
@@ -79,10 +79,28 @@ def confirmacao():
     return render_template("confirmacao.html")
 
 @app.route("/home")
-@login_required # Protege a rota para apenas usuarios logados
+@login_required
 def home():
-    # Passa o nome dinamico do usuario logado na sessao
     return render_template("home.html", usuario=current_user.nome)
+
+@app.route('/buscar', methods=['GET'])
+@login_required
+def buscar():
+    query = request.args.get('q', '')
+    resultados = []
+
+    if query:
+        try:
+            url = f"https://discoveryprovider.audius.co/v1/tracks/search?query={query}&app_name=MUSICSTREAM"
+            resposta = requests.get(url, timeout=5)
+            
+            if resposta.status_code == 200:
+                dados = resposta.json()
+                resultados = dados.get('data', [])
+        except Exception as e:
+            print(f"Erro ao buscar na API da Audius: {e}")
+
+    return render_template('buscar.html', resultados=resultados, query=query, usuario=current_user.nome)
 
 @app.route("/logout")
 @login_required
