@@ -17,7 +17,7 @@
             <nav class="nav-menu">
                 <a href="#" class="active">🏠 Início</a>
                 <a href="{{ url_for('buscar') }}" class="nav-item">🔍 Buscar</a>
-                <a href="#">📚 Sua Biblioteca</a>
+                <a href="{{ url_for('biblioteca') }}">📚 Sua Biblioteca</a>
             </nav>
             <div class="user-info">
                 <p>👤 <strong>{{ usuario }}</strong></p>

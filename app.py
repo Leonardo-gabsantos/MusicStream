@@ -1,8 +1,8 @@
 import requests
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Usuario
+from models import db, Usuario, Curtida
 
 app = Flask(__name__)
 
@@ -83,6 +83,12 @@ def confirmacao():
 def home():
     return render_template("home.html", usuario=current_user.nome)
 
+@app.route('/biblioteca')
+@login_required
+def biblioteca():
+    curtidas = Curtida.query.filter_by(usuario_id=current_user.id).order_by(Curtida.criada_em.desc()).all()
+    return render_template('biblioteca.html', curtidas=curtidas, usuario=current_user.nome)
+
 @app.route('/buscar', methods=['GET'])
 @login_required
 def buscar():
@@ -101,6 +107,37 @@ def buscar():
             print(f"Erro ao buscar na API da Audius: {e}")
 
     return render_template('buscar.html', resultados=resultados, query=query, usuario=current_user.nome)
+
+@app.route('/api/curtidas/<track_id>', methods=['GET', 'POST', 'DELETE'])
+@login_required
+def gerenciar_curtida(track_id):
+    curtida = Curtida.query.filter_by(usuario_id=current_user.id, track_id=track_id).first()
+
+    if request.method == 'GET':
+        return jsonify({'curtida': curtida is not None})
+
+    if request.method == 'DELETE':
+        if curtida:
+            db.session.delete(curtida)
+            db.session.commit()
+        return jsonify({'curtida': False})
+
+    dados = request.get_json(silent=True) or {}
+    if not curtida:
+        campos_obrigatorios = ('titulo', 'artista', 'url_audio')
+        if any(not dados.get(campo) for campo in campos_obrigatorios):
+            return jsonify({'erro': 'Dados da música incompletos.'}), 400
+        curtida = Curtida(
+            usuario_id=current_user.id,
+            track_id=track_id,
+            titulo=dados['titulo'],
+            artista=dados['artista'],
+            url_audio=dados['url_audio'],
+            capa_url=dados.get('capa_url')
+        )
+        db.session.add(curtida)
+        db.session.commit()
+    return jsonify({'curtida': True})
 
 @app.route("/logout")
 @login_required

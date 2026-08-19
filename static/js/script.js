@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let playlist = [];
     let currentIndex = -1;
+    let currentTrack = null;
 
     // Função para formatar segundos em mm:ss
     function formatTime(seconds) {
@@ -26,9 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mapeia todas as músicas da busca para a fila
     playButtons.forEach((button, index) => {
         const trackData = {
+            id: button.getAttribute('data-track-id'),
             url: button.getAttribute('data-url'),
             title: button.getAttribute('data-title'),
-            artist: button.getAttribute('data-artist')
+            artist: button.getAttribute('data-artist'),
+            artwork: button.getAttribute('data-artwork')
         };
         playlist.push(trackData);
 
@@ -43,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         currentIndex = index;
         const track = playlist[currentIndex];
+        currentTrack = track;
 
         if (track && audioPlayer) {
             audioPlayer.src = track.url;
@@ -51,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (playerTitle) playerTitle.textContent = track.title;
             if (playerArtist) playerArtist.textContent = track.artist;
             if (mainPlayBtn) mainPlayBtn.textContent = '⏸';
+            updateLikeState(track.id);
         }
     }
 
@@ -128,12 +133,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Curtir
+    async function updateLikeState(trackId) {
+        if (!likeButtons.length || !trackId) return;
+        try {
+            const response = await fetch(`/api/curtidas/${encodeURIComponent(trackId)}`);
+            const data = await response.json();
+            likeButtons.forEach(btn => btn.classList.toggle('active', data.curtida));
+        } catch (error) {
+            console.error('Não foi possível carregar a curtida:', error);
+        }
+    }
+
+    // Curtir a faixa atual e manter a biblioteca sincronizada
     const likeButtons = document.querySelectorAll('.btn-like');
     likeButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', async (e) => {
             e.stopPropagation();
-            btn.classList.toggle('active');
+            if (!currentTrack) return;
+            const liked = btn.classList.contains('active');
+            try {
+                const response = await fetch(`/api/curtidas/${encodeURIComponent(currentTrack.id)}`, {
+                    method: liked ? 'DELETE' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: liked ? undefined : JSON.stringify({
+                        titulo: currentTrack.title,
+                        artista: currentTrack.artist,
+                        url_audio: currentTrack.url,
+                        capa_url: currentTrack.artwork
+                    })
+                });
+                if (!response.ok) throw new Error('Falha ao salvar a curtida');
+                btn.classList.toggle('active', !liked);
+            } catch (error) {
+                console.error('Não foi possível salvar a curtida:', error);
+            }
         });
     });
 });

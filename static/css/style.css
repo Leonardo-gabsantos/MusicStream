@@ -434,6 +434,40 @@ body{
     overflow: hidden;          /* Esconde o texto que sobra */
     text-overflow: ellipsis;   /* Adiciona os (...) automaticamente */
 }
+
+.library-subtitle {
+    color: #a7a7a7;
+    margin-top: 8px;
+}
+
+.empty-library {
+    max-width: 520px;
+    padding: 70px 20px;
+    text-align: center;
+    color: #b3b3b3;
+}
+
+.empty-library-icon {
+    color: #3b82f6;
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+.empty-library h2 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.empty-library p {
+    margin-bottom: 24px;
+}
+
+.empty-library .btn-search {
+    display: inline-block;
+    text-decoration: none;
+}
+
 /* Estilos do Botão de Curtir */
 .btn-like {
     background: transparent;
