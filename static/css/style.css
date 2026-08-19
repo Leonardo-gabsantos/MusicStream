@@ -434,3 +434,30 @@ body{
     overflow: hidden;          /* Esconde o texto que sobra */
     text-overflow: ellipsis;   /* Adiciona os (...) automaticamente */
 }
+/* Estilos do Botão de Curtir */
+.btn-like {
+    background: transparent;
+    border: none;
+    color: #b3b3b3;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.btn-like:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* Quando estiver curtido (.active) */
+.btn-like.active {
+    color: #ef4444; /* Vermelho vibrante */
+}
+
+.btn-like.active svg {
+    fill: #ef4444; /* Preenche o coração */
+    stroke: #ef4444;
+}

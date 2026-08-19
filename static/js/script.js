@@ -4,31 +4,119 @@ document.addEventListener('DOMContentLoaded', () => {
     const playerTitle = document.getElementById('player-title');
     const playerArtist = document.getElementById('player-artist');
     const playButtons = document.querySelectorAll('.btn-play-stream');
+    const prevBtn = document.querySelector('.btn-step:first-child');
+    const nextBtn = document.querySelector('.btn-step:last-child');
+    
+    // Elementos da Barra de Tempo
+    const progressBar = document.getElementById('progress-bar');
+    const currentTimeEl = document.getElementById('current-time');
+    const totalDurationEl = document.getElementById('total-duration');
 
-    // Função para tocar uma música selecionada
-    playButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const streamUrl = button.getAttribute('data-url');
-            const title = button.getAttribute('data-title');
-            const artist = button.getAttribute('data-artist');
+    let playlist = [];
+    let currentIndex = -1;
 
-            if (streamUrl && audioPlayer) {
-                // 1. Atualiza a fonte do player invisível de áudio
-                audioPlayer.src = streamUrl;
-                audioPlayer.play();
+    // Função para formatar segundos em mm:ss
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
 
-                // 2. Atualiza o player no rodapé com os dados da música
-                if (playerTitle) playerTitle.textContent = title;
-                if (playerArtist) playerArtist.textContent = artist;
-                if (mainPlayBtn) mainPlayBtn.textContent = '⏸';
-            }
+    // Mapeia todas as músicas da busca para a fila
+    playButtons.forEach((button, index) => {
+        const trackData = {
+            url: button.getAttribute('data-url'),
+            title: button.getAttribute('data-title'),
+            artist: button.getAttribute('data-artist')
+        };
+        playlist.push(trackData);
+
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            playTrack(index);
         });
     });
 
-    // Controla o Play/Pause pelo botão do rodapé
+    function playTrack(index) {
+        if (index < 0 || index >= playlist.length) return;
+
+        currentIndex = index;
+        const track = playlist[currentIndex];
+
+        if (track && audioPlayer) {
+            audioPlayer.src = track.url;
+            audioPlayer.play();
+
+            if (playerTitle) playerTitle.textContent = track.title;
+            if (playerArtist) playerArtist.textContent = track.artist;
+            if (mainPlayBtn) mainPlayBtn.textContent = '⏸';
+        }
+    }
+
+    // Atualiza a barra de progresso e tempos durante a reprodução
+    if (audioPlayer && progressBar) {
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (audioPlayer.duration) {
+                const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBar.value = progressPercent;
+                
+                // Preenche a cor laranja dinâmica da barra
+                progressBar.style.background = `linear-gradient(to right, #ff5500 ${progressPercent}%, #404040 ${progressPercent}%)`;
+                
+                if (currentTimeEl) currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+            }
+        });
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            if (totalDurationEl) totalDurationEl.textContent = formatTime(audioPlayer.duration);
+        });
+
+        // Permite ao usuário clicar/arrastar na barra para alterar o tempo
+        progressBar.addEventListener('input', () => {
+            if (audioPlayer.duration) {
+                const seekTime = (progressBar.value / 100) * audioPlayer.duration;
+                audioPlayer.currentTime = seekTime;
+            }
+        });
+    }
+
+    // Avançar
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (playlist.length === 0) return;
+            const nextIndex = (currentIndex + 1) % playlist.length;
+            playTrack(nextIndex);
+        });
+    }
+
+    // Voltar
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (playlist.length === 0) return;
+            if (audioPlayer.currentTime > 3) {
+                audioPlayer.currentTime = 0;
+            } else {
+                const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+                playTrack(prevIndex);
+            }
+        });
+    }
+
+    // Tocar Próxima Automática ao Terminar
+    if (audioPlayer) {
+        audioPlayer.addEventListener('ended', () => {
+            if (playlist.length > 0) {
+                const nextIndex = (currentIndex + 1) % playlist.length;
+                playTrack(nextIndex);
+            }
+        });
+    }
+
+    // Play/Pause central
     if (mainPlayBtn && audioPlayer) {
         mainPlayBtn.addEventListener('click', () => {
-            if (!audioPlayer.src) return; // Se nenhuma música foi carregada ainda
+            if (!audioPlayer.src) return;
 
             if (audioPlayer.paused) {
                 audioPlayer.play();
@@ -39,4 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Curtir
+    const likeButtons = document.querySelectorAll('.btn-like');
+    likeButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.classList.toggle('active');
+        });
+    });
 });
