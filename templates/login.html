@@ -16,6 +16,16 @@
         <div class="auth-card">
             <h2 class="card-title">Login</h2>
             
+            {% with mensagens = get_flashed_messages() %}
+                {% if mensagens %}
+                    <div class="alert-error" style="color: #ff4d4d; margin-bottom: 15px; font-weight: bold; text-align: center;">
+                        {% for mensagem in mensagens %}
+                            <div>{{ mensagem }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             {% if erro %}
                 <div class="alert-error" style="color: #ff4d4d; margin-bottom: 15px; font-weight: bold; text-align: center;">
                     {{ erro }}
