@@ -461,3 +461,146 @@ body{
     fill: #ef4444; /* Preenche o coração */
     stroke: #ef4444;
 }
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+
+.progress-container span {
+    font-size: 0.8rem;
+    color: #b3b3b3;
+    min-width: 35px;
+    text-align: center;
+}
+
+/* Customização da barra de busca (input range) */
+#progress-bar {
+    flex: 1;
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #404040;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    transition: height 0.1s ease;
+}
+
+#progress-bar:hover {
+    height: 6px;
+}
+
+/* Cor do slider em navegadores Webkit (Chrome/Edge/Safari) */
+#progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5500; /* Laranja no estilo Soundcloud/da imagem */
+    cursor: pointer;
+    border: none;
+}
+
+/* Cor do slider no Firefox */
+#progress-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5500;
+    cursor: pointer;
+    border: none;
+}
+footer.player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background-color: #121212;
+    border-top: 1px solid #282828;
+    display: flex;
+    align-items: center; /* Centraliza tudo na mesma altura */
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+.player .track-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 250px;
+    flex-shrink: 0;
+}
+.player-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.progress-container {
+    display: flex !important;
+    flex-direction: row !important; /* Força os elementos a ficarem em linha reta */
+    align-items: center !important;
+    gap: 12px;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+.progress-container span {
+    font-size: 0.8rem;
+    color: #b3b3b3;
+    white-space: nowrap; /* Não deixa a minutagem quebrar linha */
+    font-variant-numeric: tabular-nums;
+}
+#progress-bar {
+    flex: 1;
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #404040;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    margin: 0;
+}
+#progress-bar:hover {
+    height: 6px;
+}
+#progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3b4252; /* Cor cinza-azulado elegante */
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s ease;
+}
+#progress-bar::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+#progress-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3b4252;
+    cursor: pointer;
+    border: none;
+}
+
+/* Botão de Curtir (Direita) */
+.player-actions {
+    width: 100px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
+}

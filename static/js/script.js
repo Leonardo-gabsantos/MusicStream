@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const playButtons = document.querySelectorAll('.btn-play-stream');
     const prevBtn = document.querySelector('.btn-step:first-child');
     const nextBtn = document.querySelector('.btn-step:last-child');
-    
+
     // Elementos da Barra de Tempo
     const progressBar = document.getElementById('progress-bar');
     const currentTimeEl = document.getElementById('current-time');
@@ -60,10 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (audioPlayer.duration) {
                 const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
                 progressBar.value = progressPercent;
-                
-                // Preenche a cor laranja dinâmica da barra
-                progressBar.style.background = `linear-gradient(to right, #ff5500 ${progressPercent}%, #404040 ${progressPercent}%)`;
-                
+
+                // Preenchimento com a cor elegante #3b4252
+                progressBar.style.background = `linear-gradient(to right, #3b4252 ${progressPercent}%, #404040 ${progressPercent}%)`;
+
                 if (currentTimeEl) currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
             }
         });
