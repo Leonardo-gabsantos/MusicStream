@@ -263,6 +263,9 @@ body{
     border-radius: 4px;
     font-size: 20px;
 }
+#music-player, .music-bar {
+    display: none;
+}
 .player-controls {
     display: flex;
     align-items: center;
@@ -637,4 +640,9 @@ footer.player {
     justify-content: flex-end;
     align-items: center;
     flex-shrink: 0;
+}
+/* Ocultação da navbar ao iniciar a home*/
+footer.player.hidden,
+.player.hidden {
+    display: none !important;
 }

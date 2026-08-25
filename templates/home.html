@@ -54,20 +54,30 @@
         </main>
     </div>
 
-    <!-- Player Fixo -->
-    <footer class="player">
+    <!-- Elemento de áudio invisível necessário para o JS -->
+    <audio id="audio-player"></audio>
+
+    <!-- Player Fixo (Inicia escondido via classe hidden) -->
+    <footer class="player hidden">
         <div class="track-info">
             <div class="track-thumb">🎶</div>
             <div>
-                <h4>Nome da Música</h4>
-                <p>Nome do Artista</p>
+                <h4 id="player-title">Nome da Música</h4>
+                <p id="player-artist">Nome do Artista</p>
             </div>
         </div>
 
         <div class="player-controls">
             <button class="btn-control btn-step">⏮</button>
-            <button class="btn-control btn-play">▶</button>
+            <button class="btn-control btn-play" id="main-play-btn">▶</button>
             <button class="btn-control btn-step">⏭</button>
+            
+            <!-- Barra de tempo sincronizada com o JS -->
+            <div class="time-container">
+                <span id="current-time">0:00</span>
+                <input type="range" id="progress-bar" value="0" min="0" max="100">
+                <span id="total-duration">0:00</span>
+            </div>
         </div>
 
         <div class="player-actions">
@@ -79,5 +89,7 @@
         </div>
     </footer>
 
+    <!-- Carregamento do JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

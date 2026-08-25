@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Elemento do Container do Player capturado
+    const playerFooter = document.querySelector('.player');
+
     const audioPlayer = document.getElementById('audio-player');
     const mainPlayBtn = document.getElementById('main-play-btn');
     const playerTitle = document.getElementById('player-title');
@@ -57,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mainPlayBtn) mainPlayBtn.textContent = '⏸';
             updateLikeState(track.id);
         }
+    }
+
+    if (audioPlayer) {
+        audioPlayer.addEventListener('play', () => {
+            if (playerFooter) playerFooter.classList.remove('hidden');
+        });
     }
 
     // Atualiza a barra de progresso e tempos durante a reprodução
