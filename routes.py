@@ -1,9 +1,51 @@
+import random
+
 import requests
-from flask import flash, jsonify, redirect, render_template, request, url_for
+from flask import flash, jsonify, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import Curtida, Usuario, db
+
+
+def obter_musicas_aleatorias(limit=3):
+    termos = ['rock', 'pop', 'jazz', 'lofi', 'electronic', 'hip hop', 'indie', 'soul', 'house', 'ambient']
+    resultados = []
+
+    for _ in range(4):
+        termo = random.choice(termos)
+        url = f'https://discoveryprovider.audius.co/v1/tracks/search?query={termo}&app_name=MUSICSTREAM'
+
+        try:
+            resposta = requests.get(url, timeout=5)
+            if resposta.status_code != 200:
+                continue
+
+            dados = resposta.json().get('data', [])
+            for musica in dados:
+                if not musica.get('id') or not musica.get('title'):
+                    continue
+
+                user = musica.get('user') or {}
+                artwork = musica.get('artwork') or {}
+
+                resultados.append({
+                    'id': musica.get('id'),
+                    'title': musica.get('title'),
+                    'artist': (user.get('name') or 'Artista desconhecido'),
+                    'artwork': artwork.get('150x150') or '',
+                    'url': f"https://discoveryprovider.audius.co/v1/tracks/{musica.get('id')}/stream?app_name=MUSICSTREAM"
+                })
+
+            if len(resultados) >= limit:
+                break
+        except Exception as e:
+            print(f'Erro ao carregar músicas aleatórias da Audius: {e}')
+
+    if len(resultados) <= limit:
+        return resultados
+
+    return random.sample(resultados, limit)
 
 
 def register_routes(app):
@@ -20,7 +62,9 @@ def register_routes(app):
             usuario = Usuario.query.filter_by(email=email).first()
 
             if usuario and check_password_hash(usuario.senha_hash, senha):
+                session.clear()
                 login_user(usuario)
+                session['musicas_home'] = obter_musicas_aleatorias()
                 return redirect(url_for('home'))
             else:
                 flash('E-mail ou senha incorretos.')
@@ -59,7 +103,9 @@ def register_routes(app):
     @app.route('/home')
     @login_required
     def home():
-        return render_template('home.html', usuario=current_user.nome)
+        musicas_home = session.get('musicas_home') or obter_musicas_aleatorias()
+        session['musicas_home'] = musicas_home
+        return render_template('home.html', usuario=current_user.nome, musicas_home=musicas_home)
 
     @app.route('/biblioteca')
     @login_required
@@ -121,4 +167,5 @@ def register_routes(app):
     @login_required
     def logout():
         logout_user()
+        session.clear()
         return redirect(url_for('login'))

@@ -32,23 +32,31 @@
             </header>
 
             <section class="section">
-                <h2>Álbuns em Destaque</h2>
+                <h2>Músicas aleatórias da Audius</h2>
                 <div class="cards-grid">
-                    <div class="card">
-                        <div class="card-img" style="background-color: #3b82f6;">🎵</div>
-                        <h3>Top Brasil</h3>
-                        <p>As músicas mais tocadas do momento.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-img" style="background-color: #8b5cf6;">🎸</div>
-                        <h3>Rock Classics</h3>
-                        <p>Os maiores sucessos do rock mundial.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-img" style="background-color: #ec4899;">🎧</div>
-                        <h3>Pop Hits</h3>
-                        <p>Sintonize nos lançamentos pop do ano.</p>
-                    </div>
+                    {% for musica in musicas_home %}
+                        <div class="card track-card">
+                            {% if musica.artwork %}
+                                <img src="{{ musica.artwork }}" alt="Capa de {{ musica.title }}" class="card-img-cover" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'), {className: 'card-img-placeholder', textContent: '🎵'}));">
+                            {% else %}
+                                <div class="card-img-placeholder">🎵</div>
+                            {% endif %}
+
+                            <div class="track-info-container">
+                                <h3 title="{{ musica.title }}">{{ musica.title }}</h3>
+                                <p title="{{ musica.artist }}">{{ musica.artist }}</p>
+                            </div>
+
+                            <button class="btn-play-stream"
+                                data-track-id="{{ musica.id }}"
+                                data-url="{{ musica.url }}"
+                                data-title="{{ musica.title }}"
+                                data-artist="{{ musica.artist }}"
+                                data-artwork="{{ musica.artwork }}">
+                                ▶ Tocar
+                            </button>
+                        </div>
+                    {% endfor %}
                 </div>
             </section>
         </main>
